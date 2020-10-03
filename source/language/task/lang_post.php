@@ -19,6 +19,9 @@ $lang = array
 	'post_complete_var_act_newthread' => '发新主题',
 	'post_complete_var_act_newreply' => '发新回复',
 	'post_complete_var_act_newpost' => '发新主题/回复',
+	'post_complete_var_act_accthread' => '累计发表主题',
+	'post_complete_var_act_accreply' => '累计发表回复',
+	'post_complete_var_act_accpost' => '累计发表主题/回复',
 	'post_complate_var_forumid' => '版块限制',
 	'post_complate_var_forumid_comment' => '设置会员只能在某个版块完成任务',
 	'post_complate_var_threadid' => '回复指定主题',
@@ -33,8 +36,13 @@ $lang = array
 	'task_complete_forumid' => '在版块 {value} ',
 	'task_complete_act_newthread' => '发新主题 {num} 次',
 	'task_complete_act_newpost' => '发新主题/回复 {num} 次',
+	'task_complete_act_newreply' => '发表新回复 {num} 次',
 	'task_complete_act_newreply_thread' => '在“{value}”回复主题 {num} 次',
 	'task_complete_act_newreply_author' => '回复作者“{value}”的主题 {num} 次',
+	'task_complete_act_accthread' => '累计发表主题 {num} 次',
+	'task_complete_act_accpost' => '累计发表 主题/回复 {num} 次',
+	'task_complete_act_accreply' => '累计发表回复 {num} 次',
+	'task_complete_act_accreply_thread' => '在“{value}”累计发表回复 {num} 次',
 );
 
 ?>

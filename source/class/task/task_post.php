@@ -5,6 +5,19 @@
  *      This is NOT a freeware, use is subject to license terms
  *
  *      $Id: task_post.php 26754 2011-12-22 08:14:22Z zhengqingpeng $
+ * 
+ * 
+ *      改动自 Discuz ! 3.4 官方原版任务。搭配同步修改lang文件
+ *      Based on origin Discuz ! 3.4 task_post.php as well as the lang file  lang_post.php
+ * 
+ *      改动日志/change log
+ *      2.0
+ *      1. 添加对应累计完成类任务，切记，累计完成类任务请勿设置为周期任务
+ *      2. 修复一个描述bug。回帖任务中，当没有限制回复指定帖子时，描述错误的显示  	回复作者“”的主题 xxx 次
+ * 
+ * 
+ *      切记，累计完成类任务请勿设置为周期任务
+ * 
  */
 
 if(!defined('IN_DISCUZ')) {
@@ -13,10 +26,10 @@ if(!defined('IN_DISCUZ')) {
 
 class task_post {
 
-	var $version = '1.0';
+	var $version = '2.0';
 	var $name = 'post_name';
 	var $description = 'post_desc';
-	var $copyright = '<a href="http://www.comsenz.com" target="_blank">Comsenz Inc.</a>';
+	var $copyright = '<a href="http://www.comsenz.com" target="_blank">Comsenz Inc.</a> & <a href="https://github.com/dog194/discuz/tree/master/task" target="_blank">Dog194.</a>';
 	var $icon = '';
 	var $period = '';
 	var $periodtype = 0;
@@ -28,6 +41,9 @@ class task_post {
 				array('newthread', 'post_complete_var_act_newthread'),
 				array('newreply', 'post_complete_var_act_newreply'),
 				array('newpost', 'post_complete_var_act_newpost'),
+				array('accthread', 'post_complete_var_act_accthread'),
+				array('accreply', 'post_complete_var_act_accreply'),
+				array('accpost', 'post_complete_var_act_accpost'),
 			),
 			'default' => 'newthread',
 			'sort' => 'complete',
@@ -82,6 +98,8 @@ class task_post {
 		$tbladd = $sqladd = '';
 		if($taskvars['act'] == 'newreply' && $taskvars['threadid']) {
 			$threadid = $taskvars['threadid'];
+		} elseif($taskvars['act'] == 'accreply' && $taskvars['threadid']) { //累计在指定帖发表回复
+			$threadid = $taskvars['threadid'];
 		} else {
 			if($taskvars['forumid']) {
 				$forumid = $taskvars['forumid'];
@@ -91,14 +109,16 @@ class task_post {
 			}
 		}
 		if($taskvars['act']) {
-			if($taskvars['act'] == 'newthread') {
+			if($taskvars['act'] == 'newthread' or $taskvars['act'] == 'accthread') { //计数类型
 				$first = '1';
-			} elseif($taskvars['act'] == 'newreply') {
+			} elseif($taskvars['act'] == 'newreply' or $taskvars['act'] == 'accreply') {
 				$first = '0';
 			}
 		}
 
-		$starttime = $task['applytime'];
+		if($taskvars['act'] == 'newthread' or $taskvars['act'] == 'newreply' or $taskvars['act'] == 'newpost'){
+			$starttime = $task['applytime']; //仅new类任务需要限制起始时间，acc累计类任务不添加此限制
+		}
 		if($taskvars['time'] = floatval($taskvars['time'])) {
 			$endtime = $task['applytime'] + 3600 * $taskvars['time'];
 		}
@@ -135,8 +155,16 @@ class task_post {
 		if($taskvars['complete']['act']['value'] == 'newreply') {
 			if($taskvars['complete']['threadid']) {
 				$return .= lang('task/post', 'task_complete_act_newreply_thread', array('value' => $value, 'num' => $taskvars['complete']['num']['value']));
+			} elseif($value == ''){
+				$return .= lang('task/post', 'task_complete_act_newreply', array('num' => $taskvars['complete']['num']['value']));
 			} else {
 				$return .= lang('task/post', 'task_complete_act_newreply_author', array('value' => $value, 'num' => $taskvars['complete']['num']['value']));
+			}
+		} elseif($taskvars['complete']['act']['value'] == 'accreply'){
+			if($taskvars['complete']['threadid']) {
+				$return .= lang('task/post', 'task_complete_act_accreply_thread', array('value' => $value, 'num' => $taskvars['complete']['num']['value']));
+			} else{
+				$return .= lang('task/post', 'task_complete_act_accreply', array('num' => $taskvars['complete']['num']['value']));
 			}
 		} else {
 			if($taskvars['complete']['forumid']) {
@@ -144,6 +172,10 @@ class task_post {
 			}
 			if($taskvars['complete']['act']['value'] == 'newthread') {
 				$return .= lang('task/post', 'task_complete_act_newthread', array('num' => $taskvars['complete']['num']['value']));
+			} elseif($taskvars['complete']['act']['value'] == 'accthread'){
+				$return .= lang('task/post', 'task_complete_act_accthread', array('num' => $taskvars['complete']['num']['value']));
+			} elseif($taskvars['complete']['act']['value'] == 'accpost'){
+				$return .= lang('task/post', 'task_complete_act_accpost', array('num' => $taskvars['complete']['num']['value']));
 			} else {
 				$return .= lang('task/post', 'task_complete_act_newpost', array('num' => $taskvars['complete']['num']['value']));
 			}
