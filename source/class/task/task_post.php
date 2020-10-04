@@ -29,7 +29,7 @@ class task_post {
 	var $version = '2.0';
 	var $name = 'post_name';
 	var $description = 'post_desc';
-	var $copyright = '<a href="http://www.comsenz.com" target="_blank">Comsenz Inc.</a> & <a href="https://github.com/dog194/discuz/tree/master/task" target="_blank">Dog194.</a>';
+	var $copyright = '<a href="http://www.comsenz.com" target="_blank">Comsenz Inc.</a> & <a href="https://github.com/dog194/discuz" target="_blank">Dog194.</a>';
 	var $icon = '';
 	var $period = '';
 	var $periodtype = 0;
